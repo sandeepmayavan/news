@@ -1,0 +1,1 @@
+worlds plitical informations
