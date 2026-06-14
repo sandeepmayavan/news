@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoiceForward — World Political & Geographical Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#0a0f1e; --red:#e8294a; --orange:#f97316; --gold:#facc15;
+      --teal:#06b6d4; --purple:#a855f7; --green:#22c55e; --pink:#ec4899;
+      --blue:#3b82f6; --border:rgba(255,255,255,0.1);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--navy); color:#fff; line-height:1.7; font-size:16px; }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; width:100%; z-index:200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1rem 5%;
+      background:rgba(10,15,30,0.95); backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo {
+      font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900;
+      background:linear-gradient(90deg,var(--gold),var(--orange),var(--pink));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .nav-tabs { display:flex; gap:0.3rem; list-style:none; }
+    .nav-tabs button {
+      background:none; border:none; cursor:pointer;
+      color:rgba(255,255,255,0.6); font-size:0.85rem; font-weight:500;
+      padding:0.45rem 0.9rem; border-radius:6px; transition:all 0.2s;
+    }
+    .nav-tabs button:hover, .nav-tabs button.active { background:rgba(255,255,255,0.1); color:#fff; }
+    .nav-tabs button.active { color:var(--teal); }
+    .nav-ask {
+      background:linear-gradient(135deg,var(--red),var(--purple));
+      color:#fff; padding:0.5rem 1.2rem; border-radius:6px;
+      font-size:0.85rem; font-weight:600; border:none; cursor:pointer;
+      transition:opacity 0.2s;
+    }
+    .nav-ask:hover { opacity:0.85; }
+
+    /* ── PAGES ── */
+    .page { display:none; padding-top:70px; min-height:100vh; }
+    .page.active { display:block; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height:92vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; text-align:center;
+      padding:6rem 5% 4rem; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:
+        radial-gradient(ellipse 55% 50% at 20% 40%,rgba(168,85,247,0.22) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 45% at 80% 60%,rgba(6,182,212,0.18) 0%,transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 90%,rgba(232,41,74,0.15) 0%,transparent 60%);
+    }
+    .hero-badge {
+      display:inline-block; font-size:0.75rem; font-weight:600;
+      letter-spacing:0.18em; text-transform:uppercase;
+      background:linear-gradient(90deg,var(--gold),var(--orange));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      border:1px solid rgba(250,204,21,0.35);
+      padding:0.32rem 1rem; border-radius:3px; margin-bottom:1.6rem;
+    }
+    .hero h1 {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2.4rem,6vw,4.8rem); font-weight:900;
+      line-height:1.1; max-width:820px; margin-bottom:1.4rem;
+    }
+    .hero h1 .gr { background:linear-gradient(90deg,var(--red),var(--orange),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .hero h1 .gt { background:linear-gradient(90deg,var(--teal),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .hero-sub {
+      font-size:clamp(1rem,1.8vw,1.18rem); color:rgba(255,255,255,0.65);
+      max-width:580px; margin:0 auto 2.2rem; line-height:1.75;
+    }
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; margin-bottom:3rem; }
+    .btn-g { background:linear-gradient(135deg,var(--red),var(--orange)); color:#fff; padding:0.8rem 2rem; border-radius:6px; font-size:1rem; font-weight:600; text-decoration:none; border:none; cursor:pointer; transition:opacity 0.2s,transform 0.15s; }
+    .btn-g:hover { opacity:0.88; transform:translateY(-2px); }
+    .btn-o { background:transparent; color:#fff; padding:0.8rem 2rem; border-radius:6px; font-size:1rem; font-weight:600; border:1px solid rgba(255,255,255,0.3); cursor:pointer; transition:all 0.2s; }
+    .btn-o:hover { border-color:var(--teal); color:var(--teal); transform:translateY(-2px); }
+    .hero-stats { display:flex; gap:3rem; padding-top:2.5rem; border-top:1px solid var(--border); flex-wrap:wrap; justify-content:center; }
+    .stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:900; }
+    .stat-label { font-size:0.8rem; color:rgba(255,255,255,0.45); margin-top:0.15rem; }
+
+    /* ── MARQUEE ── */
+    .marquee-strip { overflow:hidden; white-space:nowrap; background:linear-gradient(90deg,var(--red),var(--orange),var(--gold),var(--green),var(--teal),var(--purple),var(--pink),var(--red)); padding:0.7rem 0; }
+    .marquee-inner { display:inline-block; animation:marquee 28s linear infinite; }
+    .marquee-inner span { font-size:0.78rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#fff; padding:0 2rem; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── SECTION COMMON ── */
+    .sec { padding:5rem 5%; }
+    .sec-eye { font-size:0.72rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--teal); margin-bottom:0.6rem; }
+    .sec-title { font-family:'Playfair Display',serif; font-size:clamp(1.7rem,3vw,2.6rem); font-weight:900; line-height:1.15; margin-bottom:0.8rem; }
+    .sec-sub { color:rgba(255,255,255,0.55); font-size:1rem; max-width:540px; margin-bottom:2.8rem; line-height:1.7; }
+
+    /* ── NEWS EVENTS ── */
+    .events-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+    .event-card {
+      background:rgba(255,255,255,0.04); border:1px solid var(--border);
+      border-radius:10px; padding:1.6rem; position:relative; overflow:hidden;
+      transition:transform 0.2s,background 0.2s;
+    }
+    .event-card:hover { transform:translateY(-4px); background:rgba(255,255,255,0.07); }
+    .event-tag {
+      display:inline-block; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      padding:0.25rem 0.7rem; border-radius:4px; margin-bottom:0.9rem;
+    }
+    .tag-red { background:rgba(232,41,74,0.25); color:#ff6b84; }
+    .tag-teal { background:rgba(6,182,212,0.25); color:#67e8f9; }
+    .tag-gold { background:rgba(250,204,21,0.25); color:#fde68a; }
+    .tag-purple { background:rgba(168,85,247,0.25); color:#d8b4fe; }
+    .tag-green { background:rgba(34,197,94,0.25); color:#86efac; }
+    .tag-orange { background:rgba(249,115,22,0.25); color:#fdba74; }
+    .event-title { font-size:1rem; font-weight:600; margin-bottom:0.5rem; line-height:1.4; }
+    .event-body { font-size:0.88rem; color:rgba(255,255,255,0.58); line-height:1.7; margin-bottom:1rem; }
+    .event-meta { font-size:0.75rem; color:rgba(255,255,255,0.35); display:flex; gap:1rem; flex-wrap:wrap; }
+    .event-accent { position:absolute; top:0; left:0; width:4px; height:100%; border-radius:10px 0 0 10px; }
+
+    /* ── WORLD INFO ── */
+    .regions-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+    .rtab {
+      background:rgba(255,255,255,0.06); border:1px solid var(--border);
+      color:rgba(255,255,255,0.6); font-size:0.82rem; font-weight:500;
+      padding:0.4rem 1rem; border-radius:20px; cursor:pointer;
+      transition:all 0.2s; border:none;
+    }
+    .rtab:hover { background:rgba(255,255,255,0.12); color:#fff; }
+    .rtab.active { background:linear-gradient(135deg,var(--teal),var(--blue)); color:#fff; }
+    .region-panel { display:none; }
+    .region-panel.active { display:block; }
+    .country-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.2rem; }
+    .country-card {
+      background:rgba(255,255,255,0.04); border:1px solid var(--border);
+      border-radius:10px; padding:1.4rem; transition:all 0.2s; cursor:pointer;
+    }
+    .country-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.2); transform:translateY(-2px); }
+    .country-flag { font-size:2rem; margin-bottom:0.6rem; }
+    .country-name { font-size:1rem; font-weight:600; margin-bottom:0.25rem; }
+    .country-role { font-size:0.78rem; color:var(--teal); font-weight:500; margin-bottom:0.6rem; }
+    .country-info { font-size:0.85rem; color:rgba(255,255,255,0.55); line-height:1.65; }
+    .country-detail {
+      display:none; margin-top:1rem; padding-top:1rem;
+      border-top:1px solid var(--border);
+      font-size:0.84rem; color:rgba(255,255,255,0.65); line-height:1.7;
+    }
+    .country-card.open .country-detail { display:block; }
+
+    /* ── ASK SECTION ── */
+    .ask-wrap { max-width:720px; margin:0 auto; }
+    .ask-box {
+      background:rgba(255,255,255,0.04); border:1px solid var(--border);
+      border-radius:14px; padding:2rem; margin-bottom:2rem;
+    }
+    .ask-label { font-size:0.78rem; color:var(--teal); font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.8rem; }
+    .ask-input-row { display:flex; gap:0.75rem; }
+    .ask-input {
+      flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+      border-radius:8px; padding:0.9rem 1.2rem; color:#fff; font-size:1rem;
+      outline:none; transition:border-color 0.2s; font-family:'Inter',sans-serif;
+    }
+    .ask-input:focus { border-color:var(--teal); background:rgba(255,255,255,0.1); }
+    .ask-input::placeholder { color:rgba(255,255,255,0.38); }
+    .ask-btn {
+      background:linear-gradient(135deg,var(--purple),var(--pink));
+      color:#fff; padding:0.9rem 1.6rem; border-radius:8px;
+      font-size:0.95rem; font-weight:600; border:none; cursor:pointer;
+      transition:opacity 0.2s,transform 0.15s; white-space:nowrap;
+    }
+    .ask-btn:hover { opacity:0.85; transform:translateY(-1px); }
+    .quick-questions { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .qq {
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.7); font-size:0.8rem; padding:0.35rem 0.9rem;
+      border-radius:20px; cursor:pointer; transition:all 0.2s;
+    }
+    .qq:hover { background:rgba(6,182,212,0.2); border-color:var(--teal); color:#fff; }
+    .answer-box {
+      background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(6,182,212,0.08));
+      border:1px solid rgba(168,85,247,0.25);
+      border-radius:12px; padding:1.8rem; display:none;
+    }
+    .answer-box.visible { display:block; }
+    .answer-head { font-size:0.75rem; color:var(--purple); font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.8rem; }
+    .answer-q { font-size:1rem; font-weight:600; margin-bottom:1rem; color:var(--gold); }
+    .answer-text { font-size:0.95rem; color:rgba(255,255,255,0.8); line-height:1.8; }
+    .answer-text p { margin-bottom:0.8rem; }
+    .answer-text p:last-child { margin-bottom:0; }
+    .typing { display:inline-block; }
+    .typing::after { content:'▋'; animation:blink 0.7s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── GLOSSARY ── */
+    .glossary-search {
+      background:rgba(255,255,255,0.06); border:1px solid var(--border);
+      border-radius:8px; padding:0.8rem 1.2rem; color:#fff; font-size:1rem;
+      outline:none; width:100%; max-width:400px; margin-bottom:1.8rem;
+      font-family:'Inter',sans-serif;
+    }
+    .glossary-search::placeholder { color:rgba(255,255,255,0.38); }
+    .glossary-search:focus { border-color:var(--teal); }
+    .glossary-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+    .gloss-card {
+      background:rgba(255,255,255,0.04); border:1px solid var(--border);
+      border-radius:10px; padding:1.3rem; transition:all 0.2s;
+    }
+    .gloss-card:hover { background:rgba(255,255,255,0.07); }
+    .gloss-term { font-size:0.95rem; font-weight:600; color:var(--gold); margin-bottom:0.4rem; }
+    .gloss-def { font-size:0.85rem; color:rgba(255,255,255,0.6); line-height:1.65; }
+
+    /* ── JOIN ── */
+    .join-sec {
+      padding:6rem 5%; text-align:center;
+      background:linear-gradient(135deg,rgba(232,41,74,0.2),rgba(168,85,247,0.18),rgba(6,182,212,0.18));
+      position:relative; overflow:hidden;
+    }
+    .join-sec::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:repeating-linear-gradient(45deg,rgba(255,255,255,0.025) 0,rgba(255,255,255,0.025) 1px,transparent 1px,transparent 36px);
+    }
+    .join-sec h2 { font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; margin-bottom:1rem; background:linear-gradient(90deg,#fff,var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; position:relative; }
+    .join-sec p { font-size:1rem; color:rgba(255,255,255,0.75); max-width:480px; margin:0 auto 2.2rem; position:relative; }
+    .email-row { display:flex; gap:0.75rem; max-width:440px; margin:0 auto; flex-wrap:wrap; justify-content:center; position:relative; }
+    .email-inp { flex:1; min-width:210px; padding:0.8rem 1.1rem; border-radius:6px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:#fff; font-size:0.95rem; outline:none; }
+    .email-inp::placeholder { color:rgba(255,255,255,0.45); }
+    .btn-join { background:linear-gradient(135deg,var(--red),var(--purple)); color:#fff; padding:0.8rem 1.6rem; border-radius:6px; font-size:0.95rem; font-weight:600; border:none; cursor:pointer; transition:opacity 0.2s,transform 0.15s; }
+    .btn-join:hover { opacity:0.88; transform:translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer { padding:2.5rem 5%; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .f-logo { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:900; background:linear-gradient(90deg,var(--gold),var(--orange),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    footer p { font-size:0.8rem; color:rgba(255,255,255,0.3); }
+    .f-links { display:flex; gap:1.2rem; }
+    .f-links a { font-size:0.8rem; color:rgba(255,255,255,0.38); text-decoration:none; transition:color 0.2s; }
+    .f-links a:hover { color:var(--teal); }
+
+    @media(max-width:680px){
+      .nav-tabs { display:none; }
+      .ask-input-row { flex-direction:column; }
+      .hero h1 { font-size:2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">VoiceForward</div>
+  <ul class="nav-tabs">
+    <li><button class="active" onclick="goPage('home',this)">🏠 Home</button></li>
+    <li><button onclick="goPage('events',this)">🌍 World Events</button></li>
+    <li><button onclick="goPage('world',this)">🗺️ World Info</button></li>
+    <li><button onclick="goPage('glossary',this)">📖 Learn</button></li>
+  </ul>
+  <button class="nav-ask" onclick="goPage('ask',document.querySelector('.nav-tabs button:last-child'));showAsk()">💬 Ask a Question</button>
+</nav>
+
+<!-- ═══ HOME PAGE ═══ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-badge">🌐 Your World Political & Geographical Hub</div>
+    <h1>Understand the World's <span class="gr">Political Changes</span> — Simply & <span class="gt">Clearly</span></h1>
+    <p class="hero-sub">
+      Follow world events, explore every country's political system, ask any question in plain English, and build your knowledge of how the world works — all in one place.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-g" onclick="goPage('events',document.querySelectorAll('.nav-tabs button')[1])">🌍 Latest World Events</button>
+      <button class="btn-o" onclick="goPage('ask',document.querySelectorAll('.nav-tabs button')[3]);showAsk()">💬 Ask a Question</button>
+    </div>
+    <div class="hero-stats">
+      <div style="text-align:center"><div class="stat-num" style="color:var(--gold)">195</div><div class="stat-label">Countries Covered</div></div>
+      <div style="text-align:center"><div class="stat-num" style="color:var(--teal)">Daily</div><div class="stat-label">News Updates</div></div>
+      <div style="text-align:center"><div class="stat-num" style="color:var(--green)">Simple</div><div class="stat-label">Plain Language</div></div>
+      <div style="text-align:center"><div class="stat-num" style="color:var(--pink)">Free</div><div class="stat-label">Ask Anything</div></div>
+    </div>
+  </section>
+
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-inner">
+      <span>UN Security Council</span><span>NATO Summit</span><span>Climate Agreements</span><span>Elections 2026</span><span>G7 Leaders</span><span>Middle East Peace</span><span>Indo-Pacific</span><span>African Union</span><span>Brexit Effects</span><span>US-China Relations</span>
+      <span>UN Security Council</span><span>NATO Summit</span><span>Climate Agreements</span><span>Elections 2026</span><span>G7 Leaders</span><span>Middle East Peace</span><span>Indo-Pacific</span><span>African Union</span><span>Brexit Effects</span><span>US-China Relations</span>
+    </div>
+  </div>
+
+  <!-- WHAT THIS SITE DOES -->
+  <section class="sec">
+    <div class="sec-eye">What You Can Do Here</div>
+    <div class="sec-title">Your Complete Political Knowledge Platform</div>
+    <p class="sec-sub">Everything you need to understand world politics — written in clear, simple language anyone can follow.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.3rem;">
+      <div style="background:linear-gradient(140deg,rgba(232,41,74,0.18),rgba(249,115,22,0.1));border:1px solid rgba(232,41,74,0.3);border-radius:10px;padding:1.8rem;" onclick="goPage('events',document.querySelectorAll('.nav-tabs button')[1])" style="cursor:pointer">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem;">🌍</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.4rem;">World Events</div>
+        <div style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.65;">Follow the biggest political events shaping our world today — explained simply.</div>
+      </div>
+      <div style="background:linear-gradient(140deg,rgba(6,182,212,0.18),rgba(59,130,246,0.1));border:1px solid rgba(6,182,212,0.3);border-radius:10px;padding:1.8rem;cursor:pointer" onclick="goPage('world',document.querySelectorAll('.nav-tabs button')[2])">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem;">🗺️</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.4rem;">Country Profiles</div>
+        <div style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.65;">Explore every region of the world — governments, geography, and politics made easy.</div>
+      </div>
+      <div style="background:linear-gradient(140deg,rgba(168,85,247,0.18),rgba(236,72,153,0.1));border:1px solid rgba(168,85,247,0.3);border-radius:10px;padding:1.8rem;cursor:pointer" onclick="goPage('ask',document.querySelectorAll('.nav-tabs button')[3]);showAsk()">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem;">💬</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.4rem;">Ask Questions</div>
+        <div style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.65;">Confused about something? Ask any political question and get a clear, simple answer.</div>
+      </div>
+      <div style="background:linear-gradient(140deg,rgba(250,204,21,0.18),rgba(249,115,22,0.1));border:1px solid rgba(250,204,21,0.3);border-radius:10px;padding:1.8rem;cursor:pointer" onclick="goPage('glossary',document.querySelectorAll('.nav-tabs button')[3])">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem;">📖</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:0.4rem;">Learn Terms</div>
+        <div style="font-size:0.88rem;color:rgba(255,255,255,0.55);line-height:1.65;">Understand political words and concepts with simple plain-English definitions.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="join-sec">
+    <h2>Stay Informed. Stay Empowered.</h2>
+    <p>Get weekly political news updates delivered in clear, simple language. No jargon. No bias. Just facts.</p>
+    <div class="email-row">
+      <input class="email-inp" type="email" placeholder="Your email address" />
+      <button class="btn-join">Subscribe Free</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ WORLD EVENTS PAGE ═══ -->
+<div class="page" id="page-events">
+  <section class="sec">
+    <div class="sec-eye">🌍 Latest Updates</div>
+    <div class="sec-title">World Political Events — 2025 & 2026</div>
+    <p class="sec-sub">The biggest stories changing our world, explained in plain language so everyone can understand.</p>
+
+    <div class="events-grid">
+
+      <div class="event-card">
+        <div style="background:var(--red)" class="event-accent"></div>
+        <span class="event-tag tag-red">🇺🇸 USA</span>
+        <div class="event-title">US Presidential Transition & New Policy Direction</div>
+        <div class="event-body">In January 2025, the United States began a new presidential term, bringing major shifts in foreign policy, immigration rules, and trade agreements. These changes affected relationships with Europe, China, and Latin America — and continue to shape global politics into 2026.</div>
+        <div class="event-meta"><span>📅 Jan 2025 – Ongoing</span><span>🔖 Americas · Diplomacy</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--teal)" class="event-accent"></div>
+        <span class="event-tag tag-teal">🇷🇺🇺🇦 Europe</span>
+        <div class="event-title">Russia–Ukraine War: Ceasefire Talks & Frontline Updates</div>
+        <div class="event-body">The conflict that started in February 2022 continued through 2025. In early 2026, international ceasefire negotiations intensified, with the US, EU, and UN involved. The war has displaced millions and changed Europe's energy and security landscape forever.</div>
+        <div class="event-meta"><span>📅 2022 – 2026</span><span>🔖 Europe · Conflict · Security</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--gold)" class="event-accent"></div>
+        <span class="event-tag tag-gold">🌏 Asia</span>
+        <div class="event-title">US–China Tensions Over Taiwan & Trade</div>
+        <div class="event-body">The relationship between the world's two largest economies remains tense. Disagreements over Taiwan's status, tech exports, and military presence in the Pacific are key flashpoints. Both sides are competing for influence across Asia, Africa, and Latin America.</div>
+        <div class="event-meta"><span>📅 2024 – Ongoing</span><span>🔖 Asia · Trade · Geopolitics</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--purple)" class="event-accent"></div>
+        <span class="event-tag tag-purple">🕊️ Middle East</span>
+        <div class="event-title">Gaza Conflict & Middle East Diplomatic Crisis</div>
+        <div class="event-body">The conflict in Gaza that began in October 2023 continued into 2025–2026, causing a major humanitarian crisis. International pressure mounted on all sides. The conflict also strained relations between Arab nations and Western governments, reshaping Middle East diplomacy.</div>
+        <div class="event-meta"><span>📅 Oct 2023 – Ongoing</span><span>🔖 Middle East · Humanitarian</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--green)" class="event-accent"></div>
+        <span class="event-tag tag-green">🌱 Climate</span>
+        <div class="event-title">COP30 Climate Summit — Global Pledges & Pressure</div>
+        <div class="event-body">The 2025 UN Climate Conference (COP30) brought 190+ countries together to strengthen emissions targets. Developing nations pushed for richer countries to pay for climate damage. The summit resulted in new agreements on clean energy funding and carbon trading rules.</div>
+        <div class="event-meta"><span>📅 Nov 2025</span><span>🔖 Global · Environment · Policy</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--orange)" class="event-accent"></div>
+        <span class="event-tag tag-orange">🗳️ Elections</span>
+        <div class="event-title">Major Elections Across the World — 2025–2026</div>
+        <div class="event-body">Over 40 countries held national elections in 2025, including Germany, Canada, India state elections, and several African nations. Right-leaning and populist parties gained ground in many regions, shifting the balance of power across multiple continents.</div>
+        <div class="event-meta"><span>📅 2025 – 2026</span><span>🔖 Global · Democracy</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--pink)" class="event-accent"></div>
+        <span class="event-tag tag-purple">🌍 Africa</span>
+        <div class="event-title">Coup Wave & Democracy Challenges in West Africa</div>
+        <div class="event-body">Several West African countries, including Niger, Mali, and Burkina Faso, experienced military coups and expelled French forces, shifting towards partnerships with Russia. This reshapes French influence in Africa and creates new geopolitical alignments on the continent.</div>
+        <div class="event-meta"><span>📅 2023 – 2026</span><span>🔖 Africa · Governance</span></div>
+      </div>
+
+      <div class="event-card">
+        <div style="background:var(--blue)" class="event-accent"></div>
+        <span class="event-tag tag-teal">🤖 Tech</span>
+        <div class="event-title">AI Regulation — Governments Race to Set the Rules</div>
+        <div class="event-body">In 2025–2026, governments worldwide rushed to regulate artificial intelligence. The EU's AI Act came into full force. The US, China, and UK each introduced their own frameworks. This is the most significant new area of political and economic competition between global powers.</div>
+        <div class="event-meta"><span>📅 2025 – 2026</span><span>🔖 Global · Technology · Policy</span></div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ═══ WORLD INFO PAGE ═══ -->
+<div class="page" id="page-world">
+  <section class="sec">
+    <div class="sec-eye">🗺️ Political & Geographical World Guide</div>
+    <div class="sec-title">Every Region. Every Country. Simply Explained.</div>
+    <p class="sec-sub">Explore the world's political systems, key governments, and geographical facts. Click any country card to learn more.</p>
+
+    <div class="regions-tabs">
+      <button class="rtab active" onclick="showRegion('americas',this)">🌎 Americas</button>
+      <button class="rtab" onclick="showRegion('europe',this)">🌍 Europe</button>
+      <button class="rtab" onclick="showRegion('asia',this)">🌏 Asia</button>
+      <button class="rtab" onclick="showRegion('middleeast',this)">🕌 Middle East</button>
+      <button class="rtab" onclick="showRegion('africa',this)">🌍 Africa</button>
+      <button class="rtab" onclick="showRegion('oceania',this)">🏝️ Oceania</button>
+    </div>
+
+    <!-- AMERICAS -->
+    <div class="region-panel active" id="region-americas">
+      <div class="country-grid">
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇺🇸</div>
+          <div class="country-name">United States of America</div>
+          <div class="country-role">Federal Presidential Republic</div>
+          <div class="country-info">World's largest economy and military power. A two-party democracy with a President, Congress, and Supreme Court. Plays a leading role in NATO, the UN, and global trade.</div>
+          <div class="country-detail">Capital: Washington D.C. | Population: 335 million<br><br>The US has 50 states and a federal system where power is shared between national and state governments. The President serves 4-year terms (max 2 terms). The US dollar is the world's reserve currency, used in global trade. Major foreign policy focus areas include China, Russia, the Middle East, and climate change.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇧🇷</div>
+          <div class="country-name">Brazil</div>
+          <div class="country-role">Federal Presidential Republic</div>
+          <div class="country-info">South America's largest country and economy. A major player in climate talks due to the Amazon rainforest. Part of BRICS — a group of major emerging economies.</div>
+          <div class="country-detail">Capital: Brasília | Population: 215 million<br><br>Brazil is the world's largest Portuguese-speaking country. It holds the largest portion of the Amazon rainforest, making it central to global climate debates. Brazil is a member of BRICS (Brazil, Russia, India, China, South Africa), a bloc of fast-growing economies challenging Western dominance.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇨🇦</div>
+          <div class="country-name">Canada</div>
+          <div class="country-role">Federal Parliamentary Democracy</div>
+          <div class="country-info">A G7 member with a parliamentary system. The Prime Minister leads the government. Close ally of the US but maintains independent foreign policies on trade and climate.</div>
+          <div class="country-detail">Capital: Ottawa | Population: 40 million<br><br>Canada is a constitutional monarchy — King Charles III is the head of state, but the Prime Minister runs the government. Canada is known for universal healthcare, multicultural immigration policies, and strong environmental commitments. Trade with the US dominates — over 75% of Canadian exports go to America.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇲🇽</div>
+          <div class="country-name">Mexico</div>
+          <div class="country-role">Federal Presidential Republic</div>
+          <div class="country-info">A major emerging economy bordering the US. Key issues include drug cartel violence, immigration, and trade under the USMCA agreement with the US and Canada.</div>
+          <div class="country-detail">Capital: Mexico City | Population: 130 million<br><br>Mexico is the second-largest economy in Latin America. The USMCA (formerly NAFTA) trade deal ties Mexico, the US, and Canada together economically. Mexico is central to the US immigration debate — millions cross the US-Mexico border each year. Drug cartels remain a major security and governance challenge.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EUROPE -->
+    <div class="region-panel" id="region-europe">
+      <div class="country-grid">
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇩🇪</div>
+          <div class="country-name">Germany</div>
+          <div class="country-role">Federal Parliamentary Republic</div>
+          <div class="country-info">Europe's largest economy and a founding EU member. Leads European policy on trade, climate, and Ukraine support. Has a Chancellor (Prime Minister equivalent) as head of government.</div>
+          <div class="country-detail">Capital: Berlin | Population: 84 million<br><br>Germany is the economic engine of the European Union. After WWII, Germany was divided into East and West — reunified in 1990. Germany strongly supports the EU and NATO. In 2025, Germany held national elections with a shift toward center-right policies. Germany is phasing out nuclear power while transitioning to renewables.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇫🇷</div>
+          <div class="country-name">France</div>
+          <div class="country-role">Semi-Presidential Republic</div>
+          <div class="country-info">A permanent UN Security Council member and nuclear power. Plays a strong role in African politics (historically) and European defense. France has both a President and a Prime Minister.</div>
+          <div class="country-detail">Capital: Paris | Population: 68 million<br><br>France is one of only 5 permanent UN Security Council members (with veto power). France is a nuclear power and maintains its own independent military. It has historically had strong ties to West Africa but has faced a wave of anti-French sentiment and expulsions from countries like Mali and Burkina Faso. France is also a founding EU member and key driver of European integration.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇬🇧</div>
+          <div class="country-name">United Kingdom</div>
+          <div class="country-role">Constitutional Monarchy / Parliamentary Democracy</div>
+          <div class="country-info">Left the EU in 2020 (Brexit). A permanent UN Security Council member. Has a King as head of state and a Prime Minister who leads the government. Closely allied with the US.</div>
+          <div class="country-detail">Capital: London | Population: 67 million<br><br>Brexit (the UK leaving the EU) was voted on in 2016 and completed in 2020, causing years of political turmoil. The UK has its own trade agreements now, separate from the EU. King Charles III became King in 2022 after Queen Elizabeth II's death. The UK has 4 nations: England, Scotland, Wales, and Northern Ireland — with Scottish independence remaining a live political debate.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇷🇺</div>
+          <div class="country-name">Russia</div>
+          <div class="country-role">Federal Semi-Presidential Republic (authoritarian in practice)</div>
+          <div class="country-info">The world's largest country by area. Vladimir Putin has ruled since 2000. Russia's invasion of Ukraine in 2022 triggered global sanctions and reshaped European security.</div>
+          <div class="country-detail">Capital: Moscow | Population: 143 million<br><br>Russia spans 11 time zones across Europe and Asia. Russia is a permanent UN Security Council member (with veto power). Since 2022, Russia has been heavily sanctioned by the West. Russia supplies oil and gas to many countries, giving it economic leverage. Russia is expanding ties with China, Iran, and North Korea to counter Western pressure.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASIA -->
+    <div class="region-panel" id="region-asia">
+      <div class="country-grid">
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇨🇳</div>
+          <div class="country-name">China</div>
+          <div class="country-role">One-Party State (Communist Party)</div>
+          <div class="country-info">The world's most populous country and second-largest economy. Led by Xi Jinping. Competing with the US for global influence through trade, technology, and military expansion.</div>
+          <div class="country-detail">Capital: Beijing | Population: 1.4 billion<br><br>China is ruled by the Chinese Communist Party — there are no free elections at the national level. China's economy grew rapidly over 40 years, lifting hundreds of millions out of poverty. Key political issues include: Taiwan (China claims it as its own), Hong Kong (autonomy reduced since 2020), South China Sea (disputed islands), and US-China tech competition (chips, AI, electric vehicles).</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇮🇳</div>
+          <div class="country-name">India</div>
+          <div class="country-role">Federal Parliamentary Republic</div>
+          <div class="country-info">The world's most populous democracy. A rising global power with a fast-growing economy. Balances relationships with the US, Russia, and China. Member of BRICS and the G20.</div>
+          <div class="country-detail">Capital: New Delhi | Population: 1.43 billion (now world's largest)<br><br>India overtook China as the world's most populous country in 2023. India follows a policy of "strategic autonomy" — it buys weapons from Russia but also partners with the US on tech and defense. India is the world's 5th largest economy and growing fast. Prime Minister Narendra Modi's BJP party has dominated since 2014, with Hindu nationalism being a key political force.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇯🇵</div>
+          <div class="country-name">Japan</div>
+          <div class="country-role">Constitutional Monarchy / Parliamentary Democracy</div>
+          <div class="country-info">The world's 4th largest economy. A close US ally with American military bases. Japan is rearming after decades of a pacifist constitution, due to threats from China and North Korea.</div>
+          <div class="country-detail">Capital: Tokyo | Population: 124 million<br><br>Japan's Emperor is the head of state but has no political power. After WWII, Japan adopted a "pacifist constitution" limiting its military. But in 2022–2025, Japan dramatically increased defense spending due to North Korean missile tests and Chinese military expansion. Japan is a technology and automotive giant, and a key player in US-led Indo-Pacific strategy.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇰🇷</div>
+          <div class="country-name">South Korea</div>
+          <div class="country-role">Presidential Republic</div>
+          <div class="country-info">A tech-driven democracy and key US ally. Faces constant security threats from North Korea. In 2024, South Korea experienced a short-lived political crisis when its president briefly declared martial law.</div>
+          <div class="country-detail">Capital: Seoul | Population: 52 million<br><br>South Korea is home to global tech giants like Samsung and LG. The Korean Peninsula remains technically at war — a peace treaty was never signed after the 1950–53 Korean War. About 28,500 US troops are based in South Korea. In December 2024, President Yoon Suk-yeol declared martial law — it was overturned within hours by parliament and led to his impeachment.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE EAST -->
+    <div class="region-panel" id="region-middleeast">
+      <div class="country-grid">
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇸🇦</div>
+          <div class="country-name">Saudi Arabia</div>
+          <div class="country-role">Absolute Monarchy</div>
+          <div class="country-info">The world's largest oil exporter and home to Islam's holiest sites. Crown Prince Mohammed bin Salman (MBS) runs the country. Saudi Arabia is modernizing rapidly while maintaining an authoritarian system.</div>
+          <div class="country-detail">Capital: Riyadh | Population: 36 million<br><br>Saudi Arabia controls one of the world's largest oil reserves, giving it enormous geopolitical power. MBS launched Vision 2030 — a plan to diversify the economy away from oil. Saudi Arabia is in a historic normalization process with Israel (Abraham Accords framework). It also restored diplomatic ties with Iran in 2023, brokered by China — a major geopolitical shift.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇮🇷</div>
+          <div class="country-name">Iran</div>
+          <div class="country-role">Islamic Republic (Theocracy)</div>
+          <div class="country-info">A major regional power ruled by Islamic clerics. Tensions with the US and Israel over its nuclear program. Supports armed groups across the Middle East (Hezbollah, Houthis). Faces severe Western sanctions.</div>
+          <div class="country-detail">Capital: Tehran | Population: 88 million<br><br>Iran has two power centers: the elected President, and the Supreme Leader (currently Ali Khamenei) who has final authority on all major decisions. Iran's nuclear program — whether it is building nuclear weapons — is the biggest flashpoint with the US and Israel. Iran restored ties with Saudi Arabia in 2023, a major shift after years of rivalry. Iran supplies drones to Russia for use in Ukraine.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇮🇱</div>
+          <div class="country-name">Israel</div>
+          <div class="country-role">Parliamentary Democracy</div>
+          <div class="country-info">A democratic state in a perpetually contested region. The October 2023 Hamas attack and subsequent Gaza war have made Israel the center of intense global political debate.</div>
+          <div class="country-detail">Capital: Jerusalem (disputed) / Tel Aviv | Population: 9 million<br><br>Israel was founded in 1948, leading to the displacement of many Palestinians — the root of the Israeli-Palestinian conflict. Israel is the only country in the Middle East widely believed to possess nuclear weapons (though never officially confirmed). The US is Israel's strongest ally and provides billions in military aid each year. The Gaza conflict that began in October 2023 has deeply divided world opinion.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇹🇷</div>
+          <div class="country-name">Turkey</div>
+          <div class="country-role">Presidential Republic</div>
+          <div class="country-info">A NATO member that also maintains relations with Russia and Iran. President Erdoğan uses Turkey's strategic position — bridging Europe and Asia — to play all sides in global politics.</div>
+          <div class="country-detail">Capital: Ankara | Population: 85 million<br><br>Turkey controls the Bosphorus and Dardanelles straits — the only sea route between the Black Sea and the Mediterranean. This makes Turkey strategically vital. Turkey is a NATO member but has blocked Sweden and Finland's membership for years, using it as leverage. Turkey has been a mediator between Russia and Ukraine. Erdoğan has consolidated power since 2016, and critics say Turkey has become increasingly authoritarian.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFRICA -->
+    <div class="region-panel" id="region-africa">
+      <div class="country-grid">
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇳🇬</div>
+          <div class="country-name">Nigeria</div>
+          <div class="country-role">Federal Presidential Republic</div>
+          <div class="country-info">Africa's most populous country and largest economy. Struggles with corruption, oil dependency, and security challenges including Boko Haram. A major voice in African politics.</div>
+          <div class="country-detail">Capital: Abuja | Population: 220 million<br><br>Nigeria has the most people of any African country and will be one of the world's 3 most populous countries by 2050. Despite huge oil wealth, Nigeria faces extreme poverty and inequality. Security challenges — Boko Haram in the northeast, banditry in the northwest — remain severe. Nigeria is a key member of the African Union and ECOWAS (West African regional bloc).</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇿🇦</div>
+          <div class="country-name">South Africa</div>
+          <div class="country-role">Presidential Republic</div>
+          <div class="country-info">Africa's most industrialized economy. A BRICS member. Home to one of the world's most celebrated democracies after the end of apartheid in 1994. Faces challenges of inequality, unemployment, and power cuts.</div>
+          <div class="country-detail">Capital: Pretoria (executive), Cape Town (legislative) | Population: 61 million<br><br>South Africa ended apartheid (racial segregation) in 1994 — Nelson Mandela became the first Black president. South Africa is a BRICS member and takes a non-aligned stance in global conflicts, criticizing both Russia and the West. The ANC party that Mandela founded has governed since 1994 but lost its majority in 2024 elections, forming a coalition government.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇪🇹</div>
+          <div class="country-name">Ethiopia</div>
+          <div class="country-role">Federal Parliamentary Republic</div>
+          <div class="country-info">Africa's second most populous country. A major regional power in East Africa. Recently emerged from a devastating civil war in Tigray (2020–2022). Home to the African Union headquarters.</div>
+          <div class="country-detail">Capital: Addis Ababa | Population: 127 million<br><br>Addis Ababa hosts the headquarters of the African Union — making Ethiopia symbolically central to pan-African politics. Ethiopia's Tigray War (2020–2022) killed hundreds of thousands. Ethiopia is building the Grand Ethiopian Renaissance Dam on the Nile, creating major tensions with Egypt and Sudan over water rights.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇪🇬</div>
+          <div class="country-name">Egypt</div>
+          <div class="country-role">Presidential Republic (military-dominated)</div>
+          <div class="country-info">Africa's third most populous country. Controls the Suez Canal — one of the world's most important trade routes. A key US ally in the Arab world, receiving billions in military aid.</div>
+          <div class="country-detail">Capital: Cairo | Population: 105 million<br><br>Egypt's Suez Canal carries about 12% of global trade, making it one of the world's most strategic waterways. President el-Sisi came to power in a 2013 military coup. Egypt is in a tense standoff with Ethiopia over the Nile Dam. Egypt is also central to Gaza ceasefire negotiations, as it shares a border with Gaza at the Rafah crossing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OCEANIA -->
+    <div class="region-panel" id="region-oceania">
+      <div class="country-grid">
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇦🇺</div>
+          <div class="country-name">Australia</div>
+          <div class="country-role">Federal Parliamentary Democracy / Constitutional Monarchy</div>
+          <div class="country-info">A wealthy Pacific nation and close US ally. Member of the AUKUS security partnership (with the US and UK), which includes building nuclear-powered submarines to counter China's influence.</div>
+          <div class="country-detail">Capital: Canberra | Population: 26 million<br><br>Australia is the world's 6th largest country by area. Like Canada, it is a constitutional monarchy with King Charles III as head of state. AUKUS (2021) — a security alliance with the US and UK — was a major strategic shift. Australia's economy is heavily tied to China (its top trading partner), creating tension between economic and security interests.</div>
+        </div>
+        <div class="country-card" onclick="toggleCountry(this)">
+          <div class="country-flag">🇳🇿</div>
+          <div class="country-name">New Zealand</div>
+          <div class="country-role">Parliamentary Democracy / Constitutional Monarchy</div>
+          <div class="country-info">A progressive Pacific nation known for strong environmental policies and indigenous (Māori) rights. Part of the Five Eyes intelligence alliance with the US, UK, Canada, and Australia.</div>
+          <div class="country-detail">Capital: Wellington | Population: 5 million<br><br>New Zealand was the first country to give women the right to vote (1893). New Zealand's foreign policy is strongly focused on Pacific Island nations, indigenous rights, and climate change. The Five Eyes alliance shares intelligence between NZ, Australia, Canada, the UK, and the US.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ ASK PAGE ═══ -->
+<div class="page" id="page-ask">
+  <section class="sec">
+    <div class="sec-eye">💬 Ask Anything</div>
+    <div class="sec-title">Got a Political Question? Ask Here.</div>
+    <p class="sec-sub">No question is too simple. Ask about world events, how governments work, what political terms mean — anything. You'll get a clear, simple answer.</p>
+
+    <div class="ask-wrap">
+      <div class="ask-box">
+        <div class="ask-label">Your Question</div>
+        <div class="ask-input-row">
+          <input class="ask-input" id="askInput" type="text" placeholder="e.g. What is NATO? How does the UN work? Why is there a war in Ukraine?" />
+          <button class="ask-btn" onclick="askQuestion()">Ask ↗</button>
+        </div>
+        <div class="quick-questions">
+          <span class="qq" onclick="setQ('What is NATO and what does it do?')">What is NATO?</span>
+          <span class="qq" onclick="setQ('How does the United Nations work?')">How does the UN work?</span>
+          <span class="qq" onclick="setQ('Why did Russia invade Ukraine?')">Why did Russia invade Ukraine?</span>
+          <span class="qq" onclick="setQ('What is democracy and how does it work?')">What is democracy?</span>
+          <span class="qq" onclick="setQ('What is the difference between left and right wing politics?')">Left vs right wing?</span>
+          <span class="qq" onclick="setQ('What is the G7 and who is in it?')">What is the G7?</span>
+          <span class="qq" onclick="setQ('Why is Palestine and Israel in conflict?')">Israel–Palestine conflict?</span>
+          <span class="qq" onclick="setQ('What does a Prime Minister do?')">What does a PM do?</span>
+        </div>
+      </div>
+
+      <div class="answer-box" id="answerBox">
+        <div class="answer-head">✨ Answer</div>
+        <div class="answer-q" id="answerQ"></div>
+        <div class="answer-text" id="answerText"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══ GLOSSARY / LEARN PAGE ═══ -->
+<div class="page" id="page-glossary">
+  <section class="sec">
+    <div class="sec-eye">📖 Political Dictionary</div>
+    <div class="sec-title">Learn Political Terms — Simply Explained</div>
+    <p class="sec-sub">Don't know what a word means? Search below. Every definition is written in plain, clear language.</p>
+
+    <input class="glossary-search" id="glossSearch" type="text" placeholder="Search a term… e.g. democracy, veto, sanction" oninput="filterGloss()" />
+
+    <div class="glossary-grid" id="glossGrid">
+      <div class="gloss-card" data-term="democracy"><div class="gloss-term">Democracy</div><div class="gloss-def">A system of government where the people choose their leaders through regular, free and fair elections. The word comes from Greek meaning "rule by the people."</div></div>
+      <div class="gloss-card" data-term="republic"><div class="gloss-term">Republic</div><div class="gloss-def">A country where power belongs to the people and their elected representatives — not a king or queen. Most countries today are republics.</div></div>
+      <div class="gloss-card" data-term="constitution"><div class="gloss-term">Constitution</div><div class="gloss-def">The most important law of a country. It sets out the basic rules of government — who has what powers, and what rights citizens have.</div></div>
+      <div class="gloss-card" data-term="veto"><div class="gloss-term">Veto</div><div class="gloss-def">The power to block a decision. For example, the 5 permanent UN Security Council members (USA, UK, France, Russia, China) can each veto any UN resolution.</div></div>
+      <div class="gloss-card" data-term="sanction"><div class="gloss-term">Sanction</div><div class="gloss-def">A punishment one country places on another — like banning trade or freezing bank accounts — to pressure it to change its behavior without using military force.</div></div>
+      <div class="gloss-card" data-term="nato"><div class="gloss-term">NATO</div><div class="gloss-def">North Atlantic Treaty Organization — a military alliance of 32 countries (mostly in Europe and North America). An attack on one member is treated as an attack on all.</div></div>
+      <div class="gloss-card" data-term="un united nations"><div class="gloss-term">United Nations (UN)</div><div class="gloss-def">An international organization with 193 member countries, founded in 1945 to promote peace, human rights, and cooperation between nations after World War II.</div></div>
+      <div class="gloss-card" data-term="geopolitics"><div class="gloss-term">Geopolitics</div><div class="gloss-def">How a country's physical location — its geography — affects its politics and relationships with other countries. For example, Ukraine's position between Russia and Europe is a major geopolitical issue.</div></div>
+      <div class="gloss-card" data-term="sovereignty"><div class="gloss-term">Sovereignty</div><div class="gloss-def">A country's right to govern itself without interference from other countries. It is the foundation of international law and diplomacy.</div></div>
+      <div class="gloss-card" data-term="diplomacy"><div class="gloss-term">Diplomacy</div><div class="gloss-def">The art of managing relationships between countries through peaceful negotiation, dialogue, and agreements — rather than through war or threats.</div></div>
+      <div class="gloss-card" data-term="coup"><div class="gloss-term">Coup (d'état)</div><div class="gloss-def">When the military or a group suddenly seizes power from a government by force. Several West African countries experienced coups in 2022–2023.</div></div>
+      <div class="gloss-card" data-term="referendum"><div class="gloss-term">Referendum</div><div class="gloss-def">A public vote where all citizens can vote directly on a specific question, instead of through their elected representatives. Brexit (the UK leaving the EU) was decided by a referendum.</div></div>
+      <div class="gloss-card" data-term="parliament"><div class="gloss-term">Parliament</div><div class="gloss-def">The group of elected representatives who make the laws of a country. In the UK it is called Parliament; in the US it is called Congress; in India it is the Lok Sabha.</div></div>
+      <div class="gloss-card" data-term="brics"><div class="gloss-term">BRICS</div><div class="gloss-def">A group of major emerging economies: Brazil, Russia, India, China, and South Africa (plus newer members). They aim to challenge Western dominance of global trade and finance.</div></div>
+      <div class="gloss-card" data-term="imperialism colonialism"><div class="gloss-term">Colonialism</div><div class="gloss-def">When one country takes control of another — usually by force — to exploit its resources and people. European powers colonized much of Africa, Asia, and the Americas from the 1400s to 1900s.</div></div>
+      <div class="gloss-card" data-term="populism"><div class="gloss-term">Populism</div><div class="gloss-def">A political style that claims to represent "ordinary people" against a corrupt or out-of-touch "elite." Populist leaders are often charismatic and use simple, emotional messaging.</div></div>
+      <div class="gloss-card" data-term="left right wing liberal conservative"><div class="gloss-term">Left vs Right Wing</div><div class="gloss-def">In politics, "left wing" generally supports equality, social programs, and government intervention in the economy. "Right wing" generally supports free markets, tradition, and less government involvement.</div></div>
+      <div class="gloss-card" data-term="g7 g20"><div class="gloss-term">G7 / G20</div><div class="gloss-def">G7: the 7 wealthiest democracies (US, UK, France, Germany, Italy, Japan, Canada). G20: a wider group of 20 major economies including China, India, Brazil, and others. Both meet annually to coordinate global economic policy.</div></div>
+      <div class="gloss-card" data-term="embargo trade war"><div class="gloss-term">Trade War</div><div class="gloss-def">When countries impose tariffs (taxes on imports) on each other's goods to gain economic advantage. The US and China have been engaged in a trade war since 2018.</div></div>
+      <div class="gloss-card" data-term="human rights"><div class="gloss-term">Human Rights</div><div class="gloss-def">Basic rights and freedoms every person deserves — like the right to life, free speech, education, and safety from torture — regardless of nationality, gender, or religion.</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">VoiceForward</div>
+  <p>© 2026 VoiceForward — World Political & Geographical Hub</p>
+  <div class="f-links">
+    <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a>
+  </div>
+</footer>
+
+<script>
+// ── PAGE NAVIGATION ──
+function goPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── REGION TABS ──
+function showRegion(name, btn) {
+  document.querySelectorAll('.region-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('region-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── COUNTRY EXPAND ──
+function toggleCountry(card) {
+  card.classList.toggle('open');
+}
+
+// ── SHOW ASK BOX ──
+function showAsk() {
+  document.getElementById('page-ask').scrollIntoView();
+}
+
+// ── QUICK QUESTION ──
+function setQ(q) {
+  document.getElementById('askInput').value = q;
+  askQuestion();
+}
+
+// ── GLOSSARY FILTER ──
+function filterGloss() {
+  const q = document.getElementById('glossSearch').value.toLowerCase();
+  document.querySelectorAll('.gloss-card').forEach(c => {
+    const match = c.dataset.term.includes(q) || c.querySelector('.gloss-def').textContent.toLowerCase().includes(q) || c.querySelector('.gloss-term').textContent.toLowerCase().includes(q);
+    c.style.display = q === '' || match ? '' : 'none';
+  });
+}
+
+// ── ASK QUESTION ENGINE ──
+const answers = {
+  "nato": { title: "What is NATO and what does it do?", text: `<p><strong style="color:var(--teal)">NATO</strong> stands for the <em>North Atlantic Treaty Organization</em>. It is a military alliance of 32 countries — mostly in Europe and North America.</p><p>It was founded in 1949, after World War II, with one main goal: <strong>an attack on one member country is treated as an attack on all members</strong>. This is called "collective defense" (Article 5 of the NATO Treaty).</p><p>🌍 <strong>Who is in NATO?</strong> The US, UK, France, Germany, Canada, and most European countries. Sweden and Finland joined in 2023–2024 after Russia invaded Ukraine.</p><p>🔑 <strong>Why does it matter today?</strong> Russia's invasion of Ukraine in 2022 made NATO more important than ever. NATO countries are sending weapons and support to Ukraine, though NATO itself is not directly fighting Russia.</p>` },
+  "un": { title: "How does the United Nations work?", text: `<p><strong style="color:var(--teal)">The United Nations (UN)</strong> is an international organization with <strong>193 member countries</strong> — almost every country on Earth. It was created in 1945 after World War II to prevent future wars.</p><p>📋 <strong>The UN has 6 main parts:</strong></p><p>1. <strong>General Assembly</strong> — all 193 countries meet here. Every country gets one vote. They discuss global issues and make (non-binding) recommendations.</p><p>2. <strong>Security Council</strong> — the most powerful body. It can authorize military action or sanctions. Has 15 members, but only 5 permanent ones: USA, UK, France, Russia, China — each with <strong>veto power</strong> (they can block any decision).</p><p>3. <strong>Secretary-General</strong> — the UN's top official. Currently António Guterres (Portugal).</p><p>4. Other bodies handle specific issues: health (WHO), children (UNICEF), food (WFP), refugees (UNHCR).</p>` },
+  "ukraine": { title: "Why did Russia invade Ukraine?", text: `<p>Russia invaded Ukraine on <strong>February 24, 2022</strong> — the largest military attack in Europe since World War II. Here's why, in simple terms:</p><p>🗺️ <strong>Geography matters:</strong> Ukraine shares a long border with Russia. Russia sees Ukraine as part of its historical sphere of influence.</p><p>⚠️ <strong>NATO expansion:</strong> Ukraine expressed interest in joining NATO. Russia sees NATO on its borders as a direct threat to its security.</p><p>🏛️ <strong>2014 crisis:</strong> In 2014, Ukraine's pro-Russian president was removed after mass protests. Russia then took Crimea (a Ukrainian region) and backed separatists in eastern Ukraine.</p><p>🇺🇦 <strong>Ukrainian identity:</strong> Putin has claimed Ukraine is not a "real" country separate from Russia — Ukrainians strongly reject this.</p><p>The war has killed hundreds of thousands, displaced millions, and triggered global food and energy crises. As of 2026, peace negotiations are ongoing.</p>` },
+  "democracy": { title: "What is democracy and how does it work?", text: `<p><strong style="color:var(--gold)">Democracy</strong> means "rule by the people" (from Greek: <em>demos</em> = people, <em>kratos</em> = power).</p><p>In a democracy, citizens choose their government through <strong>free and fair elections</strong>. Leaders must regularly face voters and can be voted out.</p><p>📌 <strong>Two main types:</strong></p><p>1. <strong>Direct democracy</strong> — citizens vote directly on laws (like referendums). Rare, but Switzerland uses this often.</p><p>2. <strong>Representative democracy</strong> — citizens elect representatives (MPs, senators, presidents) who make decisions on their behalf. This is how most countries work.</p><p>🔑 <strong>Key features of a healthy democracy:</strong> Free elections, free speech, free press, independent courts, protection of minority rights, and peaceful transfer of power.</p><p>In 2025–2026, democracy is under pressure globally — with authoritarian leaders gaining power and elections being undermined in some countries.</p>` },
+  "leftwing": { title: "What is the difference between left and right wing politics?", text: `<p>The terms "left" and "right" come from the French Revolution (1789), when supporters of the king sat on the <em>right</em> of the parliament and reformers sat on the <em>left</em>.</p><p>🔵 <strong>Left Wing</strong> generally believes:<br>• The government should reduce inequality<br>• Taxes on the wealthy should be higher<br>• Strong public services (healthcare, education) funded by government<br>• Progressive social values (LGBTQ+ rights, immigration)<br>• Examples: Labour (UK), Democrats (US), Congress (India)</p><p>🔴 <strong>Right Wing</strong> generally believes:<br>• Free markets work better than government control<br>• Lower taxes encourage business and growth<br>• Traditional values and national identity matter<br>• Stricter immigration rules<br>• Examples: Conservatives (UK), Republicans (US), BJP (India)</p><p>Most people and parties sit somewhere in the middle, mixing ideas from both sides.</p>` },
+  "g7": { title: "What is the G7 and who is in it?", text: `<p><strong style="color:var(--gold)">G7</strong> stands for the "Group of Seven" — the world's seven most powerful <em>democratic</em> economies.</p><p>🌍 <strong>Members:</strong> United States, United Kingdom, France, Germany, Italy, Japan, and Canada. The European Union also participates.</p><p>📅 The G7 leaders meet once a year to discuss major global issues: the economy, climate change, health, security, and more.</p><p>❓ <strong>Is the G7 the most powerful group?</strong> Economically yes — G7 countries make up about 45% of global GDP. But the <strong>G20</strong> is bigger (includes China, India, Brazil, 
